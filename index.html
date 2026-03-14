@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rofu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
   <script>
@@ -12,17 +14,20 @@
         extend: {
           colors: {
             rofu: {
-              50:  '#fdf8f0',
-              100: '#faecd8',
-              200: '#f4d5a8',
-              300: '#ecb96e',
-              400: '#e39840',
-              500: '#d97c20',
-              600: '#c46317',
-              700: '#a34c16',
-              800: '#843e19',
-              900: '#6c3418',
+              50:  '#f5f3ff',
+              100: '#ede9fe',
+              200: '#ddd6fe',
+              300: '#c4b5fd',
+              400: '#a78bfa',
+              500: '#7c3aed',
+              600: '#6d28d9',
+              700: '#5b21b6',
+              800: '#4c1d95',
+              900: '#2e1065',
             }
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui'],
           }
         }
       }
@@ -35,174 +40,173 @@
 <body class="bg-rofu-50 min-h-screen font-sans" x-data="rofuApp()" x-cloak>
 
   <!-- Header -->
-  <header class="bg-white shadow-sm sticky top-0 z-10">
-    <div class="max-w-2xl mx-auto px-4 pt-3 pb-2 flex items-center justify-between">
+  <header class="bg-white border-b border-rofu-100 sticky top-0 z-10">
+    <div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <span class="text-2xl">🍽️</span>
+        <span class="material-icons-round text-rofu-500 text-2xl">dinner_dining</span>
         <span class="text-xl font-bold text-rofu-700 tracking-tight">Rofu</span>
       </div>
-      <span class="text-xs text-gray-400">Your family companion</span>
-    </div>
-    <!-- Tab Nav -->
-    <div class="max-w-2xl mx-auto px-3 pb-2 flex gap-1.5">
-      <button @click="tab = 'home'"
-        :class="tab === 'home' ? 'bg-rofu-500 text-white shadow' : 'text-rofu-700 hover:bg-rofu-100'"
-        class="flex-1 py-2 px-2 rounded-xl text-xs font-semibold transition-all duration-150 flex items-center justify-center gap-1">
-        🏠 <span>Home</span>
-      </button>
-      <button @click="tab = 'todos'"
-        :class="tab === 'todos' ? 'bg-rofu-500 text-white shadow' : 'text-rofu-700 hover:bg-rofu-100'"
-        class="flex-1 py-2 px-2 rounded-xl text-xs font-semibold transition-all duration-150 flex items-center justify-center gap-1">
-        ✅ <span>Todos</span>
-      </button>
-      <button @click="tab = 'recipes'"
-        :class="tab === 'recipes' ? 'bg-rofu-500 text-white shadow' : 'text-rofu-700 hover:bg-rofu-100'"
-        class="flex-1 py-2 px-2 rounded-xl text-xs font-semibold transition-all duration-150 flex items-center justify-center gap-1">
-        🍳 <span>Recipes</span>
-      </button>
-      <button @click="tab = 'grocery'"
-        :class="tab === 'grocery' ? 'bg-rofu-500 text-white shadow' : 'text-rofu-700 hover:bg-rofu-100'"
-        class="flex-1 py-2 px-2 rounded-xl text-xs font-semibold transition-all duration-150 flex items-center justify-center gap-1">
-        🛒 <span>Groceries</span>
-      </button>
+      <span class="text-xs text-rofu-400 font-medium" x-text="todayDate"></span>
     </div>
   </header>
 
-  <main class="max-w-2xl mx-auto px-4 py-5">
+  <main class="max-w-2xl mx-auto px-4 py-5 pb-24">
 
     <!-- ===== HOME TAB ===== -->
     <div x-show="tab === 'home'" x-transition>
 
       <!-- Greeting -->
-      <div class="mb-5">
-        <h1 class="text-2xl font-bold text-rofu-800" x-text="greeting"></h1>
-        <p class="text-sm text-rofu-400 mt-0.5" x-text="todayDate"></p>
-      </div>
-
-      <!-- Daily Quote / Affirmation -->
-      <div class="bg-rofu-100 border-l-4 border-rofu-400 rounded-2xl p-4 mb-4">
-        <p class="text-xs font-semibold uppercase tracking-wider text-rofu-500 mb-2">Daily Quote</p>
-        <p class="text-rofu-800 italic leading-relaxed text-sm" x-text='"\u201c" + todayAffirmation.text + "\u201d"'></p>
-        <p class="text-xs text-rofu-500 mt-2 font-medium" x-text="'\u2014 ' + todayAffirmation.author"></p>
-      </div>
-
-      <!-- Today's Priorities -->
-      <div class="bg-white rounded-2xl shadow-sm p-4 mb-4 border border-gray-100">
-        <div class="flex items-center justify-between mb-3">
-          <p class="text-xs font-semibold uppercase tracking-wider text-rofu-400">Today's Priorities</p>
-          <button @click="tab = 'todos'" class="text-xs text-rofu-500 font-medium hover:underline">View all →</button>
-        </div>
-        <template x-if="priorityTodos.length > 0">
-          <div class="space-y-2.5">
-            <template x-for="todo in priorityTodos" :key="todo.id">
-              <div class="flex items-center gap-3">
-                <button @click="todo.done = !todo.done"
-                  class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all"
-                  :class="todo.done ? 'bg-rofu-500 border-rofu-500 text-white' : 'border-gray-300 hover:border-rofu-400'">
-                  <span x-show="todo.done" class="text-xs leading-none">✓</span>
-                </button>
-                <span class="flex-1 text-sm"
-                  :class="todo.done ? 'line-through text-gray-400' : 'text-gray-700'"
-                  x-text="todo.text"></span>
-                <span class="text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0"
-                  :class="{
-                    'bg-blue-50 text-blue-500': todo.tag === 'Personal',
-                    'bg-green-50 text-green-600': todo.tag === 'Health',
-                    'bg-purple-50 text-purple-500': todo.tag === 'Home',
-                    'bg-orange-50 text-orange-500': todo.tag === 'Kitchen'
-                  }"
-                  x-text="todo.tag"></span>
-              </div>
-            </template>
-          </div>
-        </template>
-        <template x-if="priorityTodos.length === 0">
-          <p class="text-sm text-gray-400 text-center py-2">You're all caught up! 🎉</p>
-        </template>
-      </div>
-
-      <!-- Appointments -->
-      <div class="bg-white rounded-2xl shadow-sm p-4 mb-4 border border-gray-100">
-        <p class="text-xs font-semibold uppercase tracking-wider text-rofu-400 mb-3">Appointments</p>
-        <template x-if="sortedAppointments.length > 0">
-          <div class="space-y-3">
-            <template x-for="apt in sortedAppointments" :key="apt.id">
-              <div class="flex items-center gap-3">
-                <span class="text-sm font-mono text-rofu-600 w-11 flex-shrink-0 font-semibold" x-text="apt.time"></span>
-                <span class="flex-1 text-sm text-gray-700" x-text="apt.title"></span>
-                <span class="w-7 h-7 rounded-full bg-rofu-100 text-rofu-700 text-xs font-bold flex items-center justify-center flex-shrink-0"
-                  x-text="apt.person.charAt(0)"></span>
-              </div>
-            </template>
-          </div>
-        </template>
-        <template x-if="sortedAppointments.length === 0">
-          <p class="text-sm text-gray-400 text-center py-2">No appointments today</p>
-        </template>
-      </div>
-
-      <!-- Family Car -->
-      <div class="bg-white rounded-2xl shadow-sm p-4 mb-4 border border-gray-100">
-        <p class="text-xs font-semibold uppercase tracking-wider text-rofu-400 mb-3">Family Car</p>
-        <div class="flex items-center gap-3">
-          <span class="text-2xl flex-shrink-0">🚗</span>
-          <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium text-gray-700" x-text="carSchedule.driver + ' has the car'"></p>
-            <p class="text-xs text-gray-400 mt-0.5 truncate" x-text="carSchedule.note"></p>
-          </div>
-          <span class="text-xs font-semibold px-2.5 py-1 rounded-full flex-shrink-0"
-            :class="{
-              'bg-green-100 text-green-600': carSchedule.status === 'available',
-              'bg-amber-100 text-amber-600': carSchedule.status === 'in-use',
-              'bg-red-100 text-red-500': carSchedule.status === 'unavailable'
-            }"
-            x-text="carSchedule.status === 'available' ? 'Free' : carSchedule.status === 'in-use' ? 'In use' : 'Unavailable'"></span>
-        </div>
-        <div x-show="carSchedule.returnTime" class="mt-2.5 flex items-center gap-1.5 text-xs text-gray-400">
-          <span>Returns at</span>
-          <span class="font-semibold text-gray-600" x-text="carSchedule.returnTime"></span>
+      <div class="flex items-center gap-3 mb-6">
+        <span class="material-icons-round text-rofu-400 text-3xl" x-text="greetingIcon"></span>
+        <div>
+          <h1 class="text-2xl font-bold text-rofu-800" x-text="greetingText"></h1>
         </div>
       </div>
 
-      <!-- Dinner Plan -->
-      <div class="bg-white rounded-2xl shadow-sm p-4 mb-4 border border-gray-100">
-        <p class="text-xs font-semibold uppercase tracking-wider text-rofu-400 mb-3">Tonight's Dinner</p>
-        <template x-if="dinnerPlan.meal">
-          <div class="flex items-center gap-4">
-            <span class="text-3xl flex-shrink-0" x-text="dinnerPlan.emoji"></span>
-            <div class="flex-1 min-w-0">
-              <p class="font-semibold text-gray-800" x-text="dinnerPlan.meal"></p>
-              <p class="text-xs text-gray-400 mt-0.5" x-text="dinnerPlan.note"></p>
+      <div class="space-y-4">
+
+        <!-- Daily Quote -->
+        <div class="bg-white rounded-2xl border border-rofu-100 p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-icons-round text-rofu-400 text-base">format_quote</span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-rofu-500">Daily Quote</span>
+          </div>
+          <p class="text-rofu-800 italic leading-relaxed text-sm" x-text='"\u201c" + todayAffirmation.text + "\u201d"'></p>
+          <p class="text-xs text-rofu-400 mt-2 font-medium" x-text="'\u2014 ' + todayAffirmation.author"></p>
+        </div>
+
+        <!-- Today's Priorities -->
+        <div class="bg-white rounded-2xl border border-rofu-100 p-4">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="material-icons-round text-rofu-400 text-base">task_alt</span>
+              <span class="text-xs font-semibold uppercase tracking-wider text-rofu-500">Today's Priorities</span>
             </div>
-            <template x-if="dinnerPlan.recipeId">
-              <button @click="selectedRecipe = recipes.find(r => r.id === dinnerPlan.recipeId); tab = 'recipes'"
-                class="text-xs text-rofu-500 font-medium hover:underline flex-shrink-0">
-                View →
-              </button>
-            </template>
+            <button @click="tab = 'todos'" class="text-xs text-rofu-500 font-semibold hover:text-rofu-700 transition">View all</button>
           </div>
-        </template>
-        <template x-if="!dinnerPlan.meal">
-          <p class="text-sm text-gray-400 text-center py-2">Not planned yet 🤔</p>
-        </template>
-      </div>
+          <template x-if="priorityTodos.length > 0">
+            <div class="space-y-2.5">
+              <template x-for="todo in priorityTodos" :key="todo.id">
+                <div class="flex items-center gap-3">
+                  <button @click="todo.done = !todo.done"
+                    class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all"
+                    :class="todo.done ? 'bg-rofu-500 border-rofu-500' : 'border-rofu-200 hover:border-rofu-400'">
+                    <span x-show="todo.done" class="material-icons-round text-white leading-none" style="font-size:11px">check</span>
+                  </button>
+                  <span class="flex-1 text-sm"
+                    :class="todo.done ? 'line-through text-gray-400' : 'text-gray-700'"
+                    x-text="todo.text"></span>
+                  <span class="text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0"
+                    :class="{
+                      'bg-blue-50 text-blue-500': todo.tag === 'Personal',
+                      'bg-green-50 text-green-600': todo.tag === 'Health',
+                      'bg-purple-50 text-purple-500': todo.tag === 'Home',
+                      'bg-orange-50 text-orange-500': todo.tag === 'Kitchen'
+                    }"
+                    x-text="todo.tag"></span>
+                </div>
+              </template>
+            </div>
+          </template>
+          <template x-if="priorityTodos.length === 0">
+            <div class="flex items-center gap-2 py-1">
+              <span class="material-icons-round text-rofu-300 text-xl">check_circle</span>
+              <p class="text-sm text-gray-400">You're all caught up</p>
+            </div>
+          </template>
+        </div>
 
+        <!-- Appointments -->
+        <div class="bg-white rounded-2xl border border-rofu-100 p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-icons-round text-rofu-400 text-base">event</span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-rofu-500">Appointments</span>
+          </div>
+          <template x-if="sortedAppointments.length > 0">
+            <div class="space-y-3">
+              <template x-for="apt in sortedAppointments" :key="apt.id">
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-mono text-rofu-600 w-11 flex-shrink-0 font-semibold" x-text="apt.time"></span>
+                  <span class="flex-1 text-sm text-gray-700" x-text="apt.title"></span>
+                  <span class="w-7 h-7 rounded-full bg-rofu-100 text-rofu-700 text-xs font-bold flex items-center justify-center flex-shrink-0"
+                    x-text="apt.person.charAt(0)"></span>
+                </div>
+              </template>
+            </div>
+          </template>
+          <template x-if="sortedAppointments.length === 0">
+            <p class="text-sm text-gray-400">No appointments today</p>
+          </template>
+        </div>
+
+        <!-- Family Car -->
+        <div class="bg-white rounded-2xl border border-rofu-100 p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-icons-round text-rofu-400 text-base">directions_car</span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-rofu-500">Family Car</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-700" x-text="carSchedule.driver + ' has the car'"></p>
+              <p class="text-xs text-gray-400 mt-0.5 truncate" x-text="carSchedule.note"></p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full flex-shrink-0"
+              :class="{
+                'bg-green-100 text-green-600': carSchedule.status === 'available',
+                'bg-amber-100 text-amber-600': carSchedule.status === 'in-use',
+                'bg-red-100 text-red-500': carSchedule.status === 'unavailable'
+              }"
+              x-text="carSchedule.status === 'available' ? 'Free' : carSchedule.status === 'in-use' ? 'In use' : 'Unavailable'"></span>
+          </div>
+          <div x-show="carSchedule.returnTime" class="mt-2.5 flex items-center gap-1.5 text-xs text-gray-400">
+            <span class="material-icons-round text-rofu-300" style="font-size:14px">schedule</span>
+            <span>Returns at <span class="font-semibold text-gray-600" x-text="carSchedule.returnTime"></span></span>
+          </div>
+        </div>
+
+        <!-- Dinner Plan -->
+        <div class="bg-white rounded-2xl border border-rofu-100 p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-icons-round text-rofu-400 text-base">dinner_dining</span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-rofu-500">Tonight's Dinner</span>
+          </div>
+          <template x-if="dinnerPlan.meal">
+            <div class="flex items-center gap-4">
+              <span class="text-3xl flex-shrink-0" x-text="dinnerPlan.emoji"></span>
+              <div class="flex-1 min-w-0">
+                <p class="font-semibold text-gray-800" x-text="dinnerPlan.meal"></p>
+                <p class="text-xs text-gray-400 mt-0.5" x-text="dinnerPlan.note"></p>
+              </div>
+              <template x-if="dinnerPlan.recipeId">
+                <button @click="selectedRecipe = recipes.find(r => r.id === dinnerPlan.recipeId); tab = 'recipes'"
+                  class="text-xs text-rofu-500 font-semibold hover:text-rofu-700 flex-shrink-0 transition">
+                  View
+                </button>
+              </template>
+            </div>
+          </template>
+          <template x-if="!dinnerPlan.meal">
+            <p class="text-sm text-gray-400">Not planned yet</p>
+          </template>
+        </div>
+
+      </div>
     </div>
 
     <!-- ===== TODOS TAB ===== -->
     <div x-show="tab === 'todos'" x-transition>
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-bold text-gray-800">My Tasks</h2>
-        <span class="text-sm text-gray-400" x-text="todos.filter(t => !t.done).length + ' remaining'"></span>
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-lg font-bold text-rofu-800">Tasks</h2>
+        <span class="text-sm text-rofu-400 font-medium" x-text="todos.filter(t => !t.done).length + ' remaining'"></span>
       </div>
 
       <!-- Add Todo -->
       <form @submit.prevent="addTodo()" class="flex gap-2 mb-4">
         <input x-model="newTodo" type="text" placeholder="Add a task…"
-          class="flex-1 rounded-xl border border-rofu-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rofu-400 bg-white shadow-sm" />
+          class="flex-1 rounded-xl border border-rofu-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rofu-500 bg-white" />
         <button type="submit"
-          class="bg-rofu-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-rofu-600 transition shadow-sm">
-          Add
+          class="bg-rofu-500 text-white px-4 py-2.5 rounded-xl font-semibold hover:bg-rofu-600 transition flex items-center">
+          <span class="material-icons-round text-base">add</span>
         </button>
       </form>
 
@@ -210,8 +214,8 @@
       <div class="flex gap-2 mb-4">
         <template x-for="f in ['all', 'active', 'done']" :key="f">
           <button @click="todoFilter = f"
-            :class="todoFilter === f ? 'bg-rofu-500 text-white' : 'bg-white text-gray-500 border border-gray-200'"
-            class="px-3 py-1 rounded-lg text-xs font-medium capitalize transition"
+            :class="todoFilter === f ? 'bg-rofu-500 text-white' : 'bg-white text-gray-500 border border-rofu-100'"
+            class="px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition"
             x-text="f"></button>
         </template>
       </div>
@@ -219,50 +223,57 @@
       <!-- Todo List -->
       <div class="space-y-2">
         <template x-for="todo in filteredTodos" :key="todo.id">
-          <div class="bg-white rounded-xl shadow-sm border border-gray-100 px-4 py-3 flex items-center gap-3 group transition hover:shadow-md">
+          <div class="bg-white rounded-xl border border-rofu-100 px-4 py-3 flex items-center gap-3 group transition hover:border-rofu-200">
             <button @click="todo.done = !todo.done"
-              class="w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition"
-              :class="todo.done ? 'bg-rofu-500 border-rofu-500 text-white' : 'border-gray-300 hover:border-rofu-400'">
-              <span x-show="todo.done" class="text-xs">✓</span>
+              class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all"
+              :class="todo.done ? 'bg-rofu-500 border-rofu-500' : 'border-rofu-200 hover:border-rofu-400'">
+              <span x-show="todo.done" class="material-icons-round text-white leading-none" style="font-size:11px">check</span>
             </button>
             <span class="flex-1 text-sm" :class="todo.done ? 'line-through text-gray-400' : 'text-gray-700'"
               x-text="todo.text"></span>
             <span class="text-xs px-2 py-0.5 rounded-full font-medium"
               :class="{
-                'bg-blue-100 text-blue-600': todo.tag === 'Personal',
-                'bg-green-100 text-green-600': todo.tag === 'Health',
-                'bg-purple-100 text-purple-600': todo.tag === 'Home',
-                'bg-orange-100 text-orange-600': todo.tag === 'Kitchen'
+                'bg-blue-50 text-blue-500': todo.tag === 'Personal',
+                'bg-green-50 text-green-600': todo.tag === 'Health',
+                'bg-purple-50 text-purple-500': todo.tag === 'Home',
+                'bg-orange-50 text-orange-500': todo.tag === 'Kitchen'
               }"
               x-text="todo.tag"></span>
             <button @click="removeTodo(todo.id)"
-              class="text-gray-300 hover:text-red-400 opacity-0 group-hover:opacity-100 transition text-lg leading-none">×</button>
+              class="text-rofu-200 hover:text-red-400 opacity-0 group-hover:opacity-100 transition flex items-center">
+              <span class="material-icons-round text-base">close</span>
+            </button>
           </div>
         </template>
-        <div x-show="filteredTodos.length === 0" class="text-center py-10 text-gray-400 text-sm">
-          Nothing here! 🎉
+        <div x-show="filteredTodos.length === 0" class="text-center py-12">
+          <span class="material-icons-round text-5xl text-rofu-200">done_all</span>
+          <p class="mt-2 text-sm text-gray-400">Nothing here</p>
         </div>
       </div>
     </div>
 
     <!-- ===== RECIPES TAB ===== -->
     <div x-show="tab === 'recipes'" x-transition>
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-bold text-gray-800">Recipes</h2>
-        <span class="text-sm text-gray-400" x-text="recipes.length + ' recipes'"></span>
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-lg font-bold text-rofu-800">Recipes</h2>
+        <span class="text-sm text-rofu-400 font-medium" x-text="recipes.length + ' saved'"></span>
       </div>
 
       <!-- Search + Tag Filter -->
-      <div class="mb-4 space-y-2">
-        <input x-model="recipeSearch" type="text" placeholder="Search recipes…"
-          class="w-full rounded-xl border border-rofu-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rofu-400 bg-white shadow-sm" />
+      <div class="mb-4 space-y-3" x-show="!selectedRecipe">
+        <div class="relative">
+          <span class="material-icons-round absolute left-3 top-1/2 -translate-y-1/2 text-rofu-300 text-base">search</span>
+          <input x-model="recipeSearch" type="text" placeholder="Search recipes…"
+            class="w-full rounded-xl border border-rofu-200 pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rofu-500 bg-white" />
+        </div>
         <div class="flex gap-2 flex-wrap">
-          <button @click="recipeTag = ''" :class="recipeTag === '' ? 'bg-rofu-500 text-white' : 'bg-white text-gray-500 border border-gray-200'"
-            class="px-3 py-1 rounded-lg text-xs font-medium transition">All</button>
+          <button @click="recipeTag = ''"
+            :class="recipeTag === '' ? 'bg-rofu-500 text-white' : 'bg-white text-gray-500 border border-rofu-100'"
+            class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">All</button>
           <template x-for="tag in recipeTags" :key="tag">
             <button @click="recipeTag = tag"
-              :class="recipeTag === tag ? 'bg-rofu-500 text-white' : 'bg-white text-gray-500 border border-gray-200'"
-              class="px-3 py-1 rounded-lg text-xs font-medium transition"
+              :class="recipeTag === tag ? 'bg-rofu-500 text-white' : 'bg-white text-gray-500 border border-rofu-100'"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold transition"
               x-text="tag"></button>
           </template>
         </div>
@@ -272,11 +283,12 @@
       <div class="grid grid-cols-2 gap-3" x-show="!selectedRecipe">
         <template x-for="r in filteredRecipes" :key="r.id">
           <div @click="selectedRecipe = r"
-            class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 cursor-pointer hover:shadow-md transition hover:-translate-y-0.5">
+            class="bg-white rounded-2xl border border-rofu-100 p-4 cursor-pointer hover:shadow-md hover:border-rofu-200 transition">
             <div class="text-3xl mb-2 text-center" x-text="r.emoji"></div>
             <div class="font-semibold text-gray-800 text-sm text-center leading-tight" x-text="r.name"></div>
-            <div class="flex items-center justify-center gap-1 mt-2 text-xs text-gray-400">
-              <span>⏱</span><span x-text="r.time"></span>
+            <div class="flex items-center justify-center gap-1 mt-2 text-xs text-rofu-400">
+              <span class="material-icons-round" style="font-size:14px">schedule</span>
+              <span x-text="r.time"></span>
             </div>
             <div class="mt-2 flex flex-wrap gap-1 justify-center">
               <template x-for="tag in r.tags" :key="tag">
@@ -285,30 +297,39 @@
             </div>
           </div>
         </template>
-        <div x-show="filteredRecipes.length === 0" class="col-span-2 text-center py-10 text-gray-400 text-sm">
-          No recipes found.
+        <div x-show="filteredRecipes.length === 0" class="col-span-2 text-center py-12">
+          <span class="material-icons-round text-5xl text-rofu-200">search_off</span>
+          <p class="mt-2 text-sm text-gray-400">No recipes found</p>
         </div>
       </div>
 
       <!-- Recipe Detail -->
       <div x-show="selectedRecipe" x-cloak>
-        <button @click="selectedRecipe = null" class="flex items-center gap-1 text-rofu-600 text-sm mb-4 font-medium hover:underline">
-          ← Back to recipes
+        <button @click="selectedRecipe = null"
+          class="flex items-center gap-1 text-rofu-600 text-sm mb-5 font-semibold hover:text-rofu-800 transition">
+          <span class="material-icons-round text-base">arrow_back</span>
+          Recipes
         </button>
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+        <div class="bg-white rounded-2xl border border-rofu-100 p-5">
           <div class="text-5xl text-center mb-3" x-text="selectedRecipe?.emoji"></div>
-          <h3 class="text-xl font-bold text-gray-800 text-center" x-text="selectedRecipe?.name"></h3>
-          <div class="flex items-center justify-center gap-4 mt-2 text-sm text-gray-500">
-            <span>⏱ <span x-text="selectedRecipe?.time"></span></span>
-            <span>👤 <span x-text="selectedRecipe?.servings"></span> servings</span>
+          <h3 class="text-xl font-bold text-rofu-800 text-center" x-text="selectedRecipe?.name"></h3>
+          <div class="flex items-center justify-center gap-5 mt-3 text-sm text-rofu-400">
+            <span class="flex items-center gap-1">
+              <span class="material-icons-round" style="font-size:16px">schedule</span>
+              <span x-text="selectedRecipe?.time"></span>
+            </span>
+            <span class="flex items-center gap-1">
+              <span class="material-icons-round" style="font-size:16px">group</span>
+              <span x-text="selectedRecipe?.servings + ' servings'"></span>
+            </span>
           </div>
 
           <div class="mt-5">
-            <h4 class="font-semibold text-gray-700 mb-2 text-sm uppercase tracking-wide">Ingredients</h4>
-            <ul class="space-y-1.5">
+            <h4 class="font-semibold text-rofu-700 mb-3 text-xs uppercase tracking-wider">Ingredients</h4>
+            <ul class="space-y-2">
               <template x-for="ing in selectedRecipe?.ingredients" :key="ing">
-                <li class="flex items-center gap-2 text-sm text-gray-600">
-                  <span class="w-1.5 h-1.5 rounded-full bg-rofu-400 flex-shrink-0"></span>
+                <li class="flex items-center gap-2.5 text-sm text-gray-600">
+                  <span class="w-1.5 h-1.5 rounded-full bg-rofu-300 flex-shrink-0"></span>
                   <span x-text="ing"></span>
                 </li>
               </template>
@@ -316,8 +337,8 @@
           </div>
 
           <div class="mt-5">
-            <h4 class="font-semibold text-gray-700 mb-2 text-sm uppercase tracking-wide">Steps</h4>
-            <ol class="space-y-2">
+            <h4 class="font-semibold text-rofu-700 mb-3 text-xs uppercase tracking-wider">Steps</h4>
+            <ol class="space-y-2.5">
               <template x-for="(step, i) in selectedRecipe?.steps" :key="i">
                 <li class="flex gap-3 text-sm text-gray-600">
                   <span class="bg-rofu-100 text-rofu-700 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 text-xs"
@@ -329,8 +350,9 @@
           </div>
 
           <button @click="addToGrocery(selectedRecipe); tab = 'grocery'"
-            class="mt-6 w-full bg-rofu-500 text-white py-3 rounded-xl font-semibold text-sm hover:bg-rofu-600 transition shadow">
-            🛒 Add ingredients to grocery list
+            class="mt-6 w-full bg-rofu-500 text-white py-3 rounded-xl font-semibold text-sm hover:bg-rofu-600 transition flex items-center justify-center gap-2">
+            <span class="material-icons-round text-base">add_shopping_cart</span>
+            Add ingredients to list
           </button>
         </div>
       </div>
@@ -338,75 +360,116 @@
 
     <!-- ===== GROCERY TAB ===== -->
     <div x-show="tab === 'grocery'" x-transition>
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-bold text-gray-800">Grocery List</h2>
-        <button @click="clearChecked()" class="text-xs text-red-400 hover:text-red-600 font-medium">Clear picked</button>
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-lg font-bold text-rofu-800">Grocery List</h2>
+        <button @click="clearChecked()" class="text-xs text-red-400 hover:text-red-600 font-semibold transition">Clear picked</button>
       </div>
 
       <!-- Add Item -->
-      <form @submit.prevent="addGroceryItem()" class="flex gap-2 mb-5">
+      <form @submit.prevent="addGroceryItem()" class="flex gap-2 mb-3">
         <input x-model="newGroceryItem" type="text" placeholder="Add item…"
-          class="flex-1 rounded-xl border border-rofu-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rofu-400 bg-white shadow-sm" />
-        <select x-model="newGroceryCategory"
-          class="rounded-xl border border-rofu-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rofu-400 bg-white shadow-sm">
-          <option value="Produce">🥦 Produce</option>
-          <option value="Dairy">🧀 Dairy</option>
-          <option value="Pantry">🫙 Pantry</option>
-          <option value="Meat">🥩 Meat</option>
-          <option value="Other">📦 Other</option>
-        </select>
+          class="flex-1 rounded-xl border border-rofu-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rofu-500 bg-white" />
         <button type="submit"
-          class="bg-rofu-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-rofu-600 transition shadow-sm">
-          Add
+          class="bg-rofu-500 text-white px-4 py-2.5 rounded-xl font-semibold hover:bg-rofu-600 transition flex items-center">
+          <span class="material-icons-round text-base">add</span>
         </button>
       </form>
 
+      <!-- Category Picker -->
+      <div class="flex gap-2 overflow-x-auto pb-1 mb-5">
+        <template x-for="cat in groceryCategories" :key="cat.name">
+          <button @click="newGroceryCategory = cat.name"
+            :class="newGroceryCategory === cat.name ? 'bg-rofu-500 text-white' : 'bg-white text-gray-500 border border-rofu-100'"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition flex-shrink-0">
+            <span class="material-icons-round" style="font-size:14px" x-text="cat.icon"></span>
+            <span x-text="cat.name"></span>
+          </button>
+        </template>
+      </div>
+
       <!-- Progress -->
-      <div class="bg-white rounded-xl p-4 mb-5 border border-gray-100 shadow-sm">
+      <div class="bg-white rounded-xl p-4 mb-5 border border-rofu-100">
         <div class="flex justify-between text-sm mb-2">
-          <span class="text-gray-600 font-medium">Shopping progress</span>
-          <span class="text-rofu-600 font-semibold" x-text="groceryItems.filter(i=>i.checked).length + '/' + groceryItems.length + ' items'"></span>
+          <span class="text-gray-600 font-medium">Progress</span>
+          <span class="text-rofu-600 font-semibold" x-text="groceryItems.filter(i=>i.checked).length + ' / ' + groceryItems.length + ' items'"></span>
         </div>
-        <div class="w-full bg-gray-100 rounded-full h-2">
-          <div class="bg-rofu-500 h-2 rounded-full transition-all duration-300"
+        <div class="w-full bg-rofu-100 rounded-full h-1.5">
+          <div class="bg-rofu-500 h-1.5 rounded-full transition-all duration-300"
             :style="`width: ${groceryItems.length ? (groceryItems.filter(i=>i.checked).length / groceryItems.length * 100) : 0}%`"></div>
         </div>
       </div>
 
       <!-- Grouped Items -->
       <template x-for="cat in groceryCategories" :key="cat.name">
-        <div x-show="groceryItems.filter(i => i.category === cat.name).length > 0" class="mb-4">
+        <div x-show="groceryItems.filter(i => i.category === cat.name).length > 0" class="mb-5">
           <div class="flex items-center gap-2 mb-2">
-            <span x-text="cat.emoji" class="text-base"></span>
-            <span class="text-sm font-semibold text-gray-600" x-text="cat.name"></span>
-            <div class="flex-1 h-px bg-gray-200"></div>
+            <span class="material-icons-round text-rofu-400" style="font-size:16px" x-text="cat.icon"></span>
+            <span class="text-xs font-semibold text-rofu-500 uppercase tracking-wider" x-text="cat.name"></span>
+            <div class="flex-1 h-px bg-rofu-100"></div>
           </div>
           <div class="space-y-2">
             <template x-for="item in groceryItems.filter(i => i.category === cat.name)" :key="item.id">
-              <div class="bg-white rounded-xl border border-gray-100 shadow-sm px-4 py-3 flex items-center gap-3 group">
+              <div class="bg-white rounded-xl border border-rofu-100 px-4 py-3 flex items-center gap-3 group">
                 <button @click="item.checked = !item.checked"
-                  class="w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition"
-                  :class="item.checked ? 'bg-green-500 border-green-500 text-white' : 'border-gray-300 hover:border-green-400'">
-                  <span x-show="item.checked" class="text-xs">✓</span>
+                  class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all"
+                  :class="item.checked ? 'bg-green-500 border-green-500' : 'border-rofu-200 hover:border-green-400'">
+                  <span x-show="item.checked" class="material-icons-round text-white leading-none" style="font-size:11px">check</span>
                 </button>
                 <span class="flex-1 text-sm" :class="item.checked ? 'line-through text-gray-400' : 'text-gray-700'"
                   x-text="item.name"></span>
-                <span x-show="item.fromRecipe" class="text-xs bg-rofu-100 text-rofu-600 px-2 py-0.5 rounded-full font-medium"
-                  x-text="'📖 ' + item.fromRecipe"></span>
+                <span x-show="item.fromRecipe"
+                  class="flex items-center gap-1 text-xs bg-rofu-100 text-rofu-600 px-2 py-0.5 rounded-full font-medium">
+                  <span class="material-icons-round" style="font-size:12px">menu_book</span>
+                  <span x-text="item.fromRecipe"></span>
+                </span>
                 <button @click="removeGroceryItem(item.id)"
-                  class="text-gray-300 hover:text-red-400 opacity-0 group-hover:opacity-100 transition text-lg leading-none">×</button>
+                  class="text-rofu-200 hover:text-red-400 opacity-0 group-hover:opacity-100 transition flex items-center">
+                  <span class="material-icons-round text-base">close</span>
+                </button>
               </div>
             </template>
           </div>
         </div>
       </template>
 
-      <div x-show="groceryItems.length === 0" class="text-center py-10 text-gray-400 text-sm">
-        Your grocery list is empty. <br>Add items above or generate from a recipe! 🛒
+      <div x-show="groceryItems.length === 0" class="text-center py-12">
+        <span class="material-icons-round text-5xl text-rofu-200">shopping_cart</span>
+        <p class="mt-2 text-sm text-gray-400">Your list is empty</p>
+        <p class="text-xs text-rofu-300 mt-1">Add items above or generate from a recipe</p>
       </div>
     </div>
 
   </main>
+
+  <!-- Bottom Tab Bar -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-rofu-100 z-10">
+    <div class="max-w-2xl mx-auto flex">
+      <button @click="tab = 'home'"
+        :class="tab === 'home' ? 'text-rofu-500' : 'text-gray-400 hover:text-rofu-400'"
+        class="flex-1 flex flex-col items-center py-3 gap-0.5 transition">
+        <span class="material-icons-round text-2xl">home</span>
+        <span class="text-[10px] font-semibold">Home</span>
+      </button>
+      <button @click="tab = 'todos'"
+        :class="tab === 'todos' ? 'text-rofu-500' : 'text-gray-400 hover:text-rofu-400'"
+        class="flex-1 flex flex-col items-center py-3 gap-0.5 transition">
+        <span class="material-icons-round text-2xl">check_circle</span>
+        <span class="text-[10px] font-semibold">Todos</span>
+      </button>
+      <button @click="tab = 'recipes'"
+        :class="tab === 'recipes' ? 'text-rofu-500' : 'text-gray-400 hover:text-rofu-400'"
+        class="flex-1 flex flex-col items-center py-3 gap-0.5 transition">
+        <span class="material-icons-round text-2xl">menu_book</span>
+        <span class="text-[10px] font-semibold">Recipes</span>
+      </button>
+      <button @click="tab = 'grocery'"
+        :class="tab === 'grocery' ? 'text-rofu-500' : 'text-gray-400 hover:text-rofu-400'"
+        class="flex-1 flex flex-col items-center py-3 gap-0.5 transition">
+        <span class="material-icons-round text-2xl">shopping_cart</span>
+        <span class="text-[10px] font-semibold">Groceries</span>
+      </button>
+    </div>
+  </nav>
 
   <script>
     function rofuApp() {
@@ -440,11 +503,17 @@
           note: 'Quick weeknight version — from recipe book',
           recipeId: 2,
         },
-        get greeting() {
+        get greetingText() {
           const h = new Date().getHours()
-          if (h < 12) return 'Good morning \u2600\ufe0f'
-          if (h < 17) return 'Good afternoon \ud83c\udf24'
-          return 'Good evening \ud83c\udf19'
+          if (h < 12) return 'Good morning'
+          if (h < 17) return 'Good afternoon'
+          return 'Good evening'
+        },
+        get greetingIcon() {
+          const h = new Date().getHours()
+          if (h < 12) return 'wb_sunny'
+          if (h < 17) return 'partly_cloudy_day'
+          return 'bedtime'
         },
         get todayDate() {
           return new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
@@ -557,19 +626,19 @@
         newGroceryItem: '',
         newGroceryCategory: 'Produce',
         groceryCategories: [
-          { name: 'Produce', emoji: '🥦' },
-          { name: 'Dairy', emoji: '🧀' },
-          { name: 'Pantry', emoji: '🫙' },
-          { name: 'Meat', emoji: '🥩' },
-          { name: 'Other', emoji: '📦' },
+          { name: 'Produce', icon: 'local_florist' },
+          { name: 'Dairy',   icon: 'egg_alt' },
+          { name: 'Pantry',  icon: 'inventory_2' },
+          { name: 'Meat',    icon: 'set_meal' },
+          { name: 'Other',   icon: 'category' },
         ],
         groceryItems: [
-          { id: 1, name: 'Avocados', checked: false, category: 'Produce', fromRecipe: null },
-          { id: 2, name: 'Sourdough bread', checked: false, category: 'Pantry', fromRecipe: null },
-          { id: 3, name: 'Eggs', checked: true, category: 'Dairy', fromRecipe: null },
-          { id: 4, name: 'Chicken breast', checked: false, category: 'Meat', fromRecipe: null },
-          { id: 5, name: 'Bell peppers', checked: false, category: 'Produce', fromRecipe: null },
-          { id: 6, name: 'Soy sauce', checked: true, category: 'Pantry', fromRecipe: null },
+          { id: 1, name: 'Avocados',       checked: false, category: 'Produce', fromRecipe: null },
+          { id: 2, name: 'Sourdough bread',checked: false, category: 'Pantry',  fromRecipe: null },
+          { id: 3, name: 'Eggs',           checked: true,  category: 'Dairy',   fromRecipe: null },
+          { id: 4, name: 'Chicken breast', checked: false, category: 'Meat',    fromRecipe: null },
+          { id: 5, name: 'Bell peppers',   checked: false, category: 'Produce', fromRecipe: null },
+          { id: 6, name: 'Soy sauce',      checked: true,  category: 'Pantry',  fromRecipe: null },
         ],
         addGroceryItem() {
           if (!this.newGroceryItem.trim()) return
