@@ -30,42 +30,164 @@
   </script>
   <style>
     [x-cloak] { display: none !important; }
-    .tab-active { @apply bg-rofu-500 text-white shadow-md; }
-    .tab-inactive { @apply text-rofu-700 hover:bg-rofu-100; }
   </style>
 </head>
 <body class="bg-rofu-50 min-h-screen font-sans" x-data="rofuApp()" x-cloak>
 
   <!-- Header -->
   <header class="bg-white shadow-sm sticky top-0 z-10">
-    <div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div class="max-w-2xl mx-auto px-4 pt-3 pb-2 flex items-center justify-between">
       <div class="flex items-center gap-2">
         <span class="text-2xl">🍽️</span>
         <span class="text-xl font-bold text-rofu-700 tracking-tight">Rofu</span>
       </div>
-      <span class="text-xs text-gray-400">Your kitchen companion</span>
+      <span class="text-xs text-gray-400">Your family companion</span>
     </div>
     <!-- Tab Nav -->
-    <div class="max-w-2xl mx-auto px-4 pb-2 flex gap-2">
+    <div class="max-w-2xl mx-auto px-3 pb-2 flex gap-1.5">
+      <button @click="tab = 'home'"
+        :class="tab === 'home' ? 'bg-rofu-500 text-white shadow' : 'text-rofu-700 hover:bg-rofu-100'"
+        class="flex-1 py-2 px-2 rounded-xl text-xs font-semibold transition-all duration-150 flex items-center justify-center gap-1">
+        🏠 <span>Home</span>
+      </button>
       <button @click="tab = 'todos'"
         :class="tab === 'todos' ? 'bg-rofu-500 text-white shadow' : 'text-rofu-700 hover:bg-rofu-100'"
-        class="flex-1 py-2 px-3 rounded-xl text-sm font-semibold transition-all duration-150 flex items-center justify-center gap-1">
+        class="flex-1 py-2 px-2 rounded-xl text-xs font-semibold transition-all duration-150 flex items-center justify-center gap-1">
         ✅ <span>Todos</span>
       </button>
       <button @click="tab = 'recipes'"
         :class="tab === 'recipes' ? 'bg-rofu-500 text-white shadow' : 'text-rofu-700 hover:bg-rofu-100'"
-        class="flex-1 py-2 px-3 rounded-xl text-sm font-semibold transition-all duration-150 flex items-center justify-center gap-1">
+        class="flex-1 py-2 px-2 rounded-xl text-xs font-semibold transition-all duration-150 flex items-center justify-center gap-1">
         🍳 <span>Recipes</span>
       </button>
       <button @click="tab = 'grocery'"
         :class="tab === 'grocery' ? 'bg-rofu-500 text-white shadow' : 'text-rofu-700 hover:bg-rofu-100'"
-        class="flex-1 py-2 px-3 rounded-xl text-sm font-semibold transition-all duration-150 flex items-center justify-center gap-1">
+        class="flex-1 py-2 px-2 rounded-xl text-xs font-semibold transition-all duration-150 flex items-center justify-center gap-1">
         🛒 <span>Groceries</span>
       </button>
     </div>
   </header>
 
   <main class="max-w-2xl mx-auto px-4 py-5">
+
+    <!-- ===== HOME TAB ===== -->
+    <div x-show="tab === 'home'" x-transition>
+
+      <!-- Greeting -->
+      <div class="mb-5">
+        <h1 class="text-2xl font-bold text-rofu-800" x-text="greeting"></h1>
+        <p class="text-sm text-rofu-400 mt-0.5" x-text="todayDate"></p>
+      </div>
+
+      <!-- Daily Quote / Affirmation -->
+      <div class="bg-rofu-100 border-l-4 border-rofu-400 rounded-2xl p-4 mb-4">
+        <p class="text-xs font-semibold uppercase tracking-wider text-rofu-500 mb-2">Daily Quote</p>
+        <p class="text-rofu-800 italic leading-relaxed text-sm" x-text='"\u201c" + todayAffirmation.text + "\u201d"'></p>
+        <p class="text-xs text-rofu-500 mt-2 font-medium" x-text="'\u2014 ' + todayAffirmation.author"></p>
+      </div>
+
+      <!-- Today's Priorities -->
+      <div class="bg-white rounded-2xl shadow-sm p-4 mb-4 border border-gray-100">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-xs font-semibold uppercase tracking-wider text-rofu-400">Today's Priorities</p>
+          <button @click="tab = 'todos'" class="text-xs text-rofu-500 font-medium hover:underline">View all →</button>
+        </div>
+        <template x-if="priorityTodos.length > 0">
+          <div class="space-y-2.5">
+            <template x-for="todo in priorityTodos" :key="todo.id">
+              <div class="flex items-center gap-3">
+                <button @click="todo.done = !todo.done"
+                  class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all"
+                  :class="todo.done ? 'bg-rofu-500 border-rofu-500 text-white' : 'border-gray-300 hover:border-rofu-400'">
+                  <span x-show="todo.done" class="text-xs leading-none">✓</span>
+                </button>
+                <span class="flex-1 text-sm"
+                  :class="todo.done ? 'line-through text-gray-400' : 'text-gray-700'"
+                  x-text="todo.text"></span>
+                <span class="text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0"
+                  :class="{
+                    'bg-blue-50 text-blue-500': todo.tag === 'Personal',
+                    'bg-green-50 text-green-600': todo.tag === 'Health',
+                    'bg-purple-50 text-purple-500': todo.tag === 'Home',
+                    'bg-orange-50 text-orange-500': todo.tag === 'Kitchen'
+                  }"
+                  x-text="todo.tag"></span>
+              </div>
+            </template>
+          </div>
+        </template>
+        <template x-if="priorityTodos.length === 0">
+          <p class="text-sm text-gray-400 text-center py-2">You're all caught up! 🎉</p>
+        </template>
+      </div>
+
+      <!-- Appointments -->
+      <div class="bg-white rounded-2xl shadow-sm p-4 mb-4 border border-gray-100">
+        <p class="text-xs font-semibold uppercase tracking-wider text-rofu-400 mb-3">Appointments</p>
+        <template x-if="sortedAppointments.length > 0">
+          <div class="space-y-3">
+            <template x-for="apt in sortedAppointments" :key="apt.id">
+              <div class="flex items-center gap-3">
+                <span class="text-sm font-mono text-rofu-600 w-11 flex-shrink-0 font-semibold" x-text="apt.time"></span>
+                <span class="flex-1 text-sm text-gray-700" x-text="apt.title"></span>
+                <span class="w-7 h-7 rounded-full bg-rofu-100 text-rofu-700 text-xs font-bold flex items-center justify-center flex-shrink-0"
+                  x-text="apt.person.charAt(0)"></span>
+              </div>
+            </template>
+          </div>
+        </template>
+        <template x-if="sortedAppointments.length === 0">
+          <p class="text-sm text-gray-400 text-center py-2">No appointments today</p>
+        </template>
+      </div>
+
+      <!-- Family Car -->
+      <div class="bg-white rounded-2xl shadow-sm p-4 mb-4 border border-gray-100">
+        <p class="text-xs font-semibold uppercase tracking-wider text-rofu-400 mb-3">Family Car</p>
+        <div class="flex items-center gap-3">
+          <span class="text-2xl flex-shrink-0">🚗</span>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-gray-700" x-text="carSchedule.driver + ' has the car'"></p>
+            <p class="text-xs text-gray-400 mt-0.5 truncate" x-text="carSchedule.note"></p>
+          </div>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full flex-shrink-0"
+            :class="{
+              'bg-green-100 text-green-600': carSchedule.status === 'available',
+              'bg-amber-100 text-amber-600': carSchedule.status === 'in-use',
+              'bg-red-100 text-red-500': carSchedule.status === 'unavailable'
+            }"
+            x-text="carSchedule.status === 'available' ? 'Free' : carSchedule.status === 'in-use' ? 'In use' : 'Unavailable'"></span>
+        </div>
+        <div x-show="carSchedule.returnTime" class="mt-2.5 flex items-center gap-1.5 text-xs text-gray-400">
+          <span>Returns at</span>
+          <span class="font-semibold text-gray-600" x-text="carSchedule.returnTime"></span>
+        </div>
+      </div>
+
+      <!-- Dinner Plan -->
+      <div class="bg-white rounded-2xl shadow-sm p-4 mb-4 border border-gray-100">
+        <p class="text-xs font-semibold uppercase tracking-wider text-rofu-400 mb-3">Tonight's Dinner</p>
+        <template x-if="dinnerPlan.meal">
+          <div class="flex items-center gap-4">
+            <span class="text-3xl flex-shrink-0" x-text="dinnerPlan.emoji"></span>
+            <div class="flex-1 min-w-0">
+              <p class="font-semibold text-gray-800" x-text="dinnerPlan.meal"></p>
+              <p class="text-xs text-gray-400 mt-0.5" x-text="dinnerPlan.note"></p>
+            </div>
+            <template x-if="dinnerPlan.recipeId">
+              <button @click="selectedRecipe = recipes.find(r => r.id === dinnerPlan.recipeId); tab = 'recipes'"
+                class="text-xs text-rofu-500 font-medium hover:underline flex-shrink-0">
+                View →
+              </button>
+            </template>
+          </div>
+        </template>
+        <template x-if="!dinnerPlan.meal">
+          <p class="text-sm text-gray-400 text-center py-2">Not planned yet 🤔</p>
+        </template>
+      </div>
+
+    </div>
 
     <!-- ===== TODOS TAB ===== -->
     <div x-show="tab === 'todos'" x-transition>
@@ -289,7 +411,53 @@
   <script>
     function rofuApp() {
       return {
-        tab: 'todos',
+        tab: 'home',
+
+        // ── HOME ───────────────────────────────────
+        affirmations: [
+          { text: 'The secret of getting ahead is getting started.', author: 'Mark Twain' },
+          { text: 'You are enough, just as you are.', author: 'Brené Brown' },
+          { text: 'Small steps every day lead to big changes.', author: 'Unknown' },
+          { text: 'Believe you can and you\'re halfway there.', author: 'Theodore Roosevelt' },
+          { text: 'Today is a good day to have a good day.', author: 'Unknown' },
+          { text: 'Take care of your body. It\'s the only place you have to live.', author: 'Jim Rohn' },
+          { text: 'It always seems impossible until it\'s done.', author: 'Nelson Mandela' },
+        ],
+        appointments: [
+          { id: 1, title: 'School pickup', time: '15:30', person: 'Lisa' },
+          { id: 2, title: 'Dentist — Max', time: '10:00', person: 'Max' },
+          { id: 3, title: 'Call with teacher', time: '09:00', person: 'Both' },
+        ],
+        carSchedule: {
+          status: 'in-use',
+          driver: 'Alex',
+          returnTime: '18:00',
+          note: 'Dropping kids at school, then work',
+        },
+        dinnerPlan: {
+          meal: 'Pasta Pomodoro',
+          emoji: '🍝',
+          note: 'Quick weeknight version — from recipe book',
+          recipeId: 2,
+        },
+        get greeting() {
+          const h = new Date().getHours()
+          if (h < 12) return 'Good morning \u2600\ufe0f'
+          if (h < 17) return 'Good afternoon \ud83c\udf24'
+          return 'Good evening \ud83c\udf19'
+        },
+        get todayDate() {
+          return new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+        },
+        get todayAffirmation() {
+          return this.affirmations[new Date().getDay() % this.affirmations.length]
+        },
+        get priorityTodos() {
+          return this.todos.filter(t => !t.done).slice(0, 3)
+        },
+        get sortedAppointments() {
+          return [...this.appointments].sort((a, b) => a.time.localeCompare(b.time))
+        },
 
         // ── TODOS ──────────────────────────────────
         todoFilter: 'all',
